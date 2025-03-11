@@ -7,6 +7,7 @@ A Node.js application using MongoDB and Mongoose ODM.
 - Node.js (v14 or newer)
 - MongoDB (local installation or MongoDB Atlas account)
 - npm or yarn package manager
+- Docker and Docker Compose (optional, for containerized setup)
 
 ## Installation
 
@@ -29,6 +30,7 @@ yarn install
 ```
 PORT=3000
 MONGODB_URI=mongodb://localhost:27017/your_database
+# If using Docker: MONGODB_URI=mongodb://mongo:27017/your_database
 # Replace with your MongoDB connection string if using Atlas
 ```
 
@@ -44,6 +46,38 @@ npm run dev
 npm start
 ```
 
+### Using Docker
+
+1. Build and start the containers:
+```bash
+docker-compose up -d
+```
+
+2. Stop the containers:
+```bash
+docker-compose down
+```
+
+3. View logs:
+```bash
+docker-compose logs -f
+```
+
+## Docker Configuration
+
+This project includes Docker configuration for easy setup:
+
+- `Dockerfile`: Configures the Node.js application container
+- `docker-compose.yml`: Orchestrates the application and MongoDB services
+- MongoDB data is persisted using Docker volumes
+
+### MongoDB with Docker
+
+When using the Docker setup, MongoDB will be available at:
+- Host: `mongo` (container name)
+- Port: `27017`
+- Connection string: `mongodb://mongo:27017/your_database`
+
 ## Project Structure
 
 ```
@@ -55,6 +89,8 @@ mongoose-project/
 ├── middlewares/       # Custom middlewares
 ├── utils/             # Utility functions
 ├── .env               # Environment variables
+├── Dockerfile         # Docker configuration
+├── docker-compose.yml # Docker Compose configuration
 ├── package.json       # Project dependencies
 └── server.js          # Entry point
 ```
