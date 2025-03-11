@@ -3,25 +3,37 @@ const Profile = require('./model');
 // Get all profiles
 exports.getAllProfiles = async (req, res) => {
   try {
-    const { skill, location, search } = req.query;
-    
     const filter = { deleted: false };
     
-    if (skill) {
-      filter.skills = { $in: [skill] };
-    }
-    
-    if (location && location.trim() !== '') {
-      filter['information.location'] = { $regex: location, $options: 'i' };
-    }
-    
-    if (search && search.trim() !== '') {
-      filter.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
-        { 'information.bio': { $regex: search, $options: 'i' } }
-      ];
-    }
+    // Process all query parameters dynamically
+    Object.keys(req.query).forEach(key => {
+      // Handle special case for skill which uses $in operator
+      if (key === 'skill') {
+        filter.skills = { $in: [req.query[key]] };
+      }
+      // Handle special case for search which uses $or across multiple fields
+      else if (key === 'search' && req.query[key].trim() !== '') {
+        filter.$or = [
+          { name: { $regex: req.query[key], $options: 'i' } },
+          { email: { $regex: req.query[key], $options: 'i' } },
+          { 'information.bio': { $regex: req.query[key], $options: 'i' } }
+        ];
+      }
+      // Handle information fields
+      else if (key.startsWith('info_') && req.query[key].trim() !== '') {
+        const infoField = key.replace('info_', '');
+        filter[`information.${infoField}`] = { $regex: req.query[key], $options: 'i' };
+      }
+      // Handle direct model fields
+      else if (req.query[key].trim && req.query[key].trim() !== '') {
+        // Only add non-empty string parameters
+        filter[key] = { $regex: req.query[key], $options: 'i' };
+      }
+      else if (req.query[key] !== '') {
+        // Handle non-string parameters (like numbers, booleans)
+        filter[key] = req.query[key];
+      }
+    });
     
     const profiles = await Profile.find(filter);
     res.json(profiles);
