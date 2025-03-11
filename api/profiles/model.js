@@ -19,6 +19,7 @@ const ProfileSchema = new mongoose.Schema({
   experience: [ExperienceSchema],
   skills: [String],
   information: InformationSchema,
-});
+  deleted: { type: Boolean, default: false },
+}, { timestamps: true });
 
 module.exports = mongoose.model('Profile', ProfileSchema);

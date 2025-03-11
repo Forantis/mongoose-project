@@ -8,7 +8,22 @@ services:
     volumes:
       - mongo_data:/data/db
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+
+  api:
+    build: .
+    container_name: api_container
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    environment:
+      - MONGODB_URI=mongodb://root:example@mongo:27017/profile-api?authSource=admin
+      - PORT=3000
+    volumes:
+      - ./:/app
+      - /app/node_modules
+
 volumes:
   mongo_data:

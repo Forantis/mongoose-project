@@ -1,112 +1,182 @@
-# Mongoose Project
+# Profile API with Mongoose
 
-A Node.js application using MongoDB and Mongoose ODM.
+This project is a RESTful API that manages user profiles using Express.js and MongoDB with Mongoose.
 
-## Prerequisites
+## Requirements
 
-- Node.js (v14 or newer)
-- MongoDB (local installation or MongoDB Atlas account)
-- npm or yarn package manager
-- Docker and Docker Compose (optional, for containerized setup)
+- Node.js (>= 14.x)
+- Docker and Docker Compose
 
 ## Installation
 
 1. Clone the repository:
-```bash
-git clone <repository-url>
+```
+git clone https://github.com/yourusername/mongoose-project.git
 cd mongoose-project
 ```
 
 2. Install dependencies:
-```bash
+```
 npm install
-# or
-yarn install
-```
-
-3. Environment setup:
-   
-   Create a `.env` file in the root directory with the following content:
-```
-PORT=3000
-MONGODB_URI=mongodb://localhost:27017/your_database
-# If using Docker: MONGODB_URI=mongodb://mongo:27017/your_database
-# Replace with your MongoDB connection string if using Atlas
 ```
 
 ## Running the Application
 
-### Development mode
-```bash
-npm run dev
+### Using Docker (Recommended)
+
+1. Start the application and MongoDB using Docker Compose:
+```
+docker-compose up
 ```
 
-### Production mode
-```bash
-npm start
+2. To run in detached mode:
 ```
-
-### Using Docker
-
-1. Build and start the containers:
-```bash
 docker-compose up -d
 ```
 
-2. Stop the containers:
-```bash
+3. To stop the application:
+```
 docker-compose down
 ```
 
-3. View logs:
-```bash
-docker-compose logs -f
+### Manual Setup
+
+1. Install MongoDB locally or use a cloud-hosted solution
+2. Create a `.env` file with the following variables:
 ```
-
-## Docker Configuration
-
-This project includes Docker configuration for easy setup:
-
-- `Dockerfile`: Configures the Node.js application container
-- `docker-compose.yml`: Orchestrates the application and MongoDB services
-- MongoDB data is persisted using Docker volumes
-
-### MongoDB with Docker
-
-When using the Docker setup, MongoDB will be available at:
-- Host: `mongo` (container name)
-- Port: `27017`
-- Connection string: `mongodb://mongo:27017/your_database`
-
-## Project Structure
-
+MONGODB_URI=mongodb://root:example@localhost:27017/profile-api?authSource=admin
+PORT=3000
 ```
-mongoose-project/
-├── config/            # Configuration files
-├── controllers/       # Route controllers
-├── models/            # Mongoose models
-├── routes/            # API routes
-├── middlewares/       # Custom middlewares
-├── utils/             # Utility functions
-├── .env               # Environment variables
-├── Dockerfile         # Docker configuration
-├── docker-compose.yml # Docker Compose configuration
-├── package.json       # Project dependencies
-└── server.js          # Entry point
+3. Run the application:
+```
+npm start
 ```
 
 ## API Endpoints
 
-- `GET /api/resource` - Get all resources
-- `GET /api/resource/:id` - Get a specific resource
-- `POST /api/resource` - Create a new resource
-- `PUT /api/resource/:id` - Update a resource
-- `DELETE /api/resource/:id` - Delete a resource
+### Profiles
 
-## Database
+- **GET /profiles** - Get all profiles
+  - Query parameters:
+    - `skill` - Filter by skill
+    - `location` - Filter by location
+    - `search` - Search in name, email, and bio
 
-This project uses MongoDB with Mongoose ODM. Models are defined in the `/models` directory.
+- **GET /profiles/:id** - Get a single profile by ID
+
+- **POST /profiles** - Create a new profile
+  - Request body:
+    ```json
+    {
+      "name": "John Doe",
+      "email": "john@example.com"
+    }
+    ```
+
+- **PUT /profiles/:id** - Update a profile
+  - Request body:
+    ```json
+    {
+      "name": "Jane Doe",
+      "email": "jane@example.com"
+    }
+    ```
+
+- **DELETE /profiles/:id** - Soft-delete a profile
+
+### Profile Experience
+
+- **POST /profiles/:id/experience** - Add experience to a profile
+  - Request body:
+    ```json
+    {
+      "title": "Software Developer",
+      "company": "Tech Co",
+      "dates": "2020-2023",
+      "description": "Full-stack development"
+    }
+    ```
+
+- **DELETE /profiles/:id/experience/:exp** - Delete an experience
+
+### Profile Skills
+
+- **POST /profiles/:id/skills** - Add a skill to a profile
+  - Request body:
+    ```json
+    {
+      "skill": "JavaScript"
+    }
+    ```
+
+- **DELETE /profiles/:id/skills/:skill** - Delete a skill
+
+### Profile Information
+
+- **PUT /profiles/:id/information** - Update profile information
+  - Request body:
+    ```json
+    {
+      "bio": "Full-stack developer",
+      "location": "Paris, France",
+      "website": "https://johndoe.com"
+    }
+    ```
+
+## Testing with Postman
+
+1. Import the [Postman Collection](./postman_collection.json) (if available)
+2. Or create a new collection with the following requests:
+
+### Create a Profile
+- **Method**: POST
+- **URL**: `http://localhost:3000/profiles`
+- **Headers**: Content-Type: application/json
+- **Body**:
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com"
+}
+```
+
+### Add Experience
+- **Method**: POST
+- **URL**: `http://localhost:3000/profiles/{profile_id}/experience`
+- **Headers**: Content-Type: application/json
+- **Body**:
+```json
+{
+  "title": "Software Developer",
+  "company": "Tech Co",
+  "dates": "2020-2023",
+  "description": "Full-stack development"
+}
+```
+
+### Add Skill
+- **Method**: POST
+- **URL**: `http://localhost:3000/profiles/{profile_id}/skills`
+- **Headers**: Content-Type: application/json
+- **Body**:
+```json
+{
+  "skill": "JavaScript"
+}
+```
+
+### Update Information
+- **Method**: PUT
+- **URL**: `http://localhost:3000/profiles/{profile_id}/information`
+- **Headers**: Content-Type: application/json
+- **Body**:
+```json
+{
+  "bio": "Full-stack developer",
+  "location": "Paris, France",
+  "website": "https://johndoe.com"
+}
+```
 
 ## License
-
-[MIT](LICENSE)
+MIT
