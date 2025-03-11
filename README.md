@@ -10,12 +10,14 @@ This project is a RESTful API that manages user profiles using Express.js and Mo
 ## Installation
 
 1. Clone the repository:
+
 ```
 git clone https://github.com/yourusername/mongoose-project.git
 cd mongoose-project
 ```
 
 2. Install dependencies:
+
 ```
 npm install
 ```
@@ -25,16 +27,19 @@ npm install
 ### Using Docker (Recommended)
 
 1. Start the application and MongoDB using Docker Compose:
+
 ```
 docker-compose up
 ```
 
 2. To run in detached mode:
+
 ```
 docker-compose up -d
 ```
 
 3. To stop the application:
+
 ```
 docker-compose down
 ```
@@ -43,11 +48,14 @@ docker-compose down
 
 1. Install MongoDB locally or use a cloud-hosted solution
 2. Create a `.env` file with the following variables:
+
 ```
 MONGODB_URI=mongodb://root:example@localhost:27017/profile-api?authSource=admin
 PORT=3000
 ```
+
 3. Run the application:
+
 ```
 npm start
 ```
@@ -57,6 +65,7 @@ npm start
 ### Profiles
 
 - **GET /profiles** - Get all profiles
+
   - Query parameters:
     - `skill` - Filter by skill
     - `location` - Filter by location
@@ -65,6 +74,7 @@ npm start
 - **GET /profiles/:id** - Get a single profile by ID
 
 - **POST /profiles** - Create a new profile
+
   - Request body:
     ```json
     {
@@ -74,6 +84,7 @@ npm start
     ```
 
 - **PUT /profiles/:id** - Update a profile
+
   - Request body:
     ```json
     {
@@ -87,6 +98,7 @@ npm start
 ### Profile Experience
 
 - **POST /profiles/:id/experience** - Add experience to a profile
+
   - Request body:
     ```json
     {
@@ -102,6 +114,7 @@ npm start
 ### Profile Skills
 
 - **POST /profiles/:id/skills** - Add a skill to a profile
+
   - Request body:
     ```json
     {
@@ -129,10 +142,12 @@ npm start
 2. Or create a new collection with the following requests:
 
 ### Create a Profile
+
 - **Method**: POST
 - **URL**: `http://localhost:3000/profiles`
 - **Headers**: Content-Type: application/json
 - **Body**:
+
 ```json
 {
   "name": "John Doe",
@@ -141,10 +156,12 @@ npm start
 ```
 
 ### Add Experience
+
 - **Method**: POST
 - **URL**: `http://localhost:3000/profiles/{profile_id}/experience`
 - **Headers**: Content-Type: application/json
 - **Body**:
+
 ```json
 {
   "title": "Software Developer",
@@ -155,10 +172,12 @@ npm start
 ```
 
 ### Add Skill
+
 - **Method**: POST
 - **URL**: `http://localhost:3000/profiles/{profile_id}/skills`
 - **Headers**: Content-Type: application/json
 - **Body**:
+
 ```json
 {
   "skill": "JavaScript"
@@ -166,10 +185,12 @@ npm start
 ```
 
 ### Update Information
+
 - **Method**: PUT
 - **URL**: `http://localhost:3000/profiles/{profile_id}/information`
 - **Headers**: Content-Type: application/json
 - **Body**:
+
 ```json
 {
   "bio": "Full-stack developer",
@@ -178,5 +199,15 @@ npm start
 }
 ```
 
+### Bonus : additionnal filters
+
+
+- **URL**: `http://localhost:3000/profiles?name=John`
+- **URL**: `http://localhost:3000/profiles?skill=JavaScript`
+- **URL**: `http://localhost:3000/profiles?info_location=Paris`
+- **URL**: `http://localhost:3000/profiles?search=developer`
+- **URL**: `http://localhost:3000/profiles?email=example.com`
+
 ## License
+
 MIT
