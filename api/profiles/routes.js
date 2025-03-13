@@ -16,4 +16,9 @@ router.post('/profiles/:id/skills', controller.addSkill);
 router.delete('/profiles/:id/skills/:skill', controller.deleteSkill);
 router.put('/profiles/:id/information', controller.updateInformation);
 
+// Friend routes
+router.post('/profiles/:id/friends', controller.addFriend);
+router.delete('/profiles/:id/friends/:friendId', controller.removeFriend);
+router.get('/profiles/:id/friends', controller.getFriends);
+
 module.exports = router;

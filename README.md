@@ -9,44 +9,13 @@ This project is a RESTful API that manages user profiles using Express.js and Mo
 
 ## Installation
 
-1. Clone the repository:
+1. Get the project:
 
 ```
 git clone https://github.com/yourusername/mongoose-project.git
 cd mongoose-project
 ```
 
-2. Install dependencies:
-
-```
-npm install
-```
-
-## Running the Application
-
-### Using Docker (Recommended)
-
-1. Start the application and MongoDB using Docker Compose:
-
-```
-docker-compose up
-```
-
-2. To run in detached mode:
-
-```
-docker-compose up -d
-```
-
-3. To stop the application:
-
-```
-docker-compose down
-```
-
-### Manual Setup
-
-1. Install MongoDB locally or use a cloud-hosted solution
 2. Create a `.env` file with the following variables:
 
 ```
@@ -54,11 +23,18 @@ MONGODB_URI=mongodb://root:example@localhost:27017/profile-api?authSource=admin
 PORT=3000
 ```
 
-3. Run the application:
+3. Start the project:
 
 ```
-npm start
+docker compose up
 ```
+
+### To stop the application:
+
+```
+docker compose down
+```
+
 
 ## API Endpoints
 
@@ -138,8 +114,6 @@ npm start
 
 ## Testing with Postman
 
-1. Import the [Postman Collection](./postman_collection.json) (if available)
-2. Or create a new collection with the following requests:
 
 ### Create a Profile
 
@@ -208,6 +182,22 @@ npm start
 - **URL**: `http://localhost:3000/profiles?search=developer`
 - **URL**: `http://localhost:3000/profiles?email=example.com`
 
-## License
+### Bonus : friends route
 
-MIT
+#### Add a Friend
+
+- **Method**: POST
+- **URL**: `http://localhost:3000/profiles/{profile_id}/friends/{friend_id}`
+- **Description**: Add a friend relationship between two profiles
+
+#### Get All Friends
+
+- **Method**: GET
+- **URL**: `http://localhost:3000/profiles/{profile_id}/friends`
+- **Description**: Retrieve all friends of a profile
+
+#### Remove a Friend
+
+- **Method**: DELETE
+- **URL**: `http://localhost:3000/profiles/{profile_id}/friends/{friend_id}`
+- **Description**: Remove a friend relationship between two profiles

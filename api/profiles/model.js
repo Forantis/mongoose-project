@@ -1,25 +1,51 @@
 const mongoose = require('mongoose');
 
-const ExperienceSchema = new mongoose.Schema({
+const experienceSchema = new mongoose.Schema({
   title: String,
   company: String,
-  dates: String,
-  description: String,
-});
-
-const InformationSchema = new mongoose.Schema({
-  bio: String,
   location: String,
-  website: String,
-});
-
-const ProfileSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  experience: [ExperienceSchema],
-  skills: [String],
-  information: InformationSchema,
-  deleted: { type: Boolean, default: false },
+  from: Date,
+  to: Date,
+  current: Boolean,
+  description: String
 }, { timestamps: true });
 
-module.exports = mongoose.model('Profile', ProfileSchema);
+const informationSchema = new mongoose.Schema({
+  bio: String,
+  age: Number,
+  location: String,
+  website: String,
+  phone: String,
+  status: String,
+  birthdate: Date
+});
+
+const profileSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  information: {
+    type: informationSchema,
+    default: {}
+  },
+  experience: [experienceSchema],
+  skills: [String],
+  friends: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Profile'
+  }],
+  deleted: {
+    type: Boolean,
+    default: false
+  }
+}, {
+  timestamps: true
+});
+
+module.exports = mongoose.model('Profile', profileSchema);

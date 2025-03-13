@@ -11,7 +11,7 @@ exports.getAllProfiles = async (req, res) => {
       if (key === 'skill') {
         filter.skills = { $in: [req.query[key]] };
       }
-      // Handle special case for search which uses $or across multiple fields
+      // Handle special case for search
       else if (key === 'search' && req.query[key].trim() !== '') {
         filter.$or = [
           { name: { $regex: req.query[key], $options: 'i' } },
@@ -35,7 +35,7 @@ exports.getAllProfiles = async (req, res) => {
       }
     });
     
-    const profiles = await Profile.find(filter);
+    const profiles = await Profile.find(filter).populate('friends');
     res.json(profiles);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -45,7 +45,7 @@ exports.getAllProfiles = async (req, res) => {
 // Get profile by ID
 exports.getProfileById = async (req, res) => {
   try {
-    const profile = await Profile.findOne({ _id: req.params.id, deleted: false });
+    const profile = await Profile.findOne({ _id: req.params.id, deleted: false }).populate('friends');
     if (!profile) return res.status(404).json({ message: 'Profile not found' });
     res.json(profile);
   } catch (err) {
@@ -175,5 +175,65 @@ exports.updateInformation = async (req, res) => {
     res.json(profile);
   } catch (err) {
     res.status(400).json({ message: err.message });
+  }
+};
+
+// Add friend to profile
+exports.addFriend = async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ _id: req.params.id, deleted: false });
+    if (!profile) return res.status(404).json({ message: 'Profile not found' });
+
+    const { friendId } = req.body;
+    
+    // Verify the friend exists and is not deleted
+    const friendProfile = await Profile.findOne({ _id: friendId, deleted: false });
+    if (!friendProfile) return res.status(404).json({ message: 'Friend profile not found' });
+    
+    // Check if already friends
+    if (profile.friends.includes(friendId)) {
+      return res.status(400).json({ message: 'Friend already added' });
+    }
+
+    profile.friends.push(friendId);
+    await profile.save();
+    
+    // Return populated friends
+    const updatedProfile = await Profile.findById(profile._id).populate('friends');
+    res.status(201).json(updatedProfile);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+// Remove friend from profile
+exports.removeFriend = async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ _id: req.params.id, deleted: false });
+    if (!profile) return res.status(404).json({ message: 'Profile not found' });
+
+    const friendIndex = profile.friends.findIndex(friend => friend.toString() === req.params.friendId);
+    if (friendIndex === -1) return res.status(404).json({ message: 'Friend not found' });
+
+    profile.friends.splice(friendIndex, 1);
+    await profile.save();
+    
+    // Return populated friends
+    const updatedProfile = await Profile.findById(profile._id).populate('friends');
+    res.json(updatedProfile);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+// Get friends of profile
+exports.getFriends = async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ _id: req.params.id, deleted: false }).populate('friends');
+    if (!profile) return res.status(404).json({ message: 'Profile not found' });
+
+    res.json(profile.friends);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
